@@ -52,19 +52,18 @@ exports.getUserClaims = async (user_id) => {
   return result.rows;
 };
 
-// 특정 진행상황인 클레임들 가져오기
-// /claims?process={process_id}
+// 특정 진행상황인 클레임들 가져오기 -> /claims?process={process_id}
 exports.getClaimsByProcess = async (process) => {
   const query = "SELECT * FROM claim WHERE last_assigned = $1";
   const result = await database.query(query, [process]);
   return result.rows;
 };
 
-//claims에 있는 모든 정보 가져오기
+//claims에 있는 모든 정보 가져오기 -> /claims
 exports.getAllClaims = async () => {
   const query = "SELECT * FROM Claim";
   const result = await database.query(query);
-  return res.status(200).json(result.rows);
+  return result.rows;
 };
 
 ///////////////////////// 상담내역 가져오기 /////////////////////////

@@ -4,6 +4,6 @@ const { newHistory } = require("../controllers/post_controllers");
 const { appendHistory } = require("../controllers/post_controllers");
 
 router.post("/claims", newHistory);
-router.post("/call_histories", appendHistory);
+router.post("/call-histories", appendHistory);
 
 module.exports = router;
