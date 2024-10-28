@@ -1,5 +1,5 @@
-const { Pool } = require('pg'); // postgre 모듈 불러오기
-require('dotenv').config(); // .env 파일 사용 설정
+const { Pool } = require("pg");
+require("dotenv").config();
 
 const pool = new Pool({
   host: process.env.DB_HOST,
@@ -9,4 +9,4 @@ const pool = new Pool({
   db_name: process.env.DB_NAME,
 });
 
-module.exports = pool; // {}로 감쌀 경우 pool .pool 변수로 사용해야함
+module.exports = pool;
