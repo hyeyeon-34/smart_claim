@@ -1,6 +1,6 @@
 const database = require("../database/database");
 
-// 첫 문의전화 ( 새로운 클레임번호와 히스토리 생성) -> Claim_id을 serial number가 아닌 uuid로 대체하는 방법도 있음
+// 첫 문의전화 ( 새로운 클레임번호와 히스토리 생성) 
 exports.newHistory = async (req, res) => {
   const client = await database.connect(); // 데이터베이스 클라이언트 연결
   const { claim_type_idx, user_id, manager_idx, progress_idx, comment } =
