@@ -8,9 +8,10 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.use(require("./routes/get_routes"));
-app.use(require("./routes/post_routes"));
-app.use(require("./routes/patch_routes"));
-app.use(require("./routes/delete_routes"));
+app.use(require("./routes/claims_histories_rts"));
+app.use(require("./routes/documents_rts"));
+app.use(require("./routes/login_rts"));
+app.use(require("./routes/managers_rts"));
+app.use(require("./routes/users_rts"));
 
 app.listen(PORT, () => console.log(`Server is runnig on ${PORT}`));

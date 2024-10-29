@@ -4,7 +4,7 @@ const database = require("../database/database");
 // claim_id에 해당하는 클레임 정보 가져오기
 exports.getClaim = async (req, res) => {
   const { claim_id } = req.params;
-  const query = "SELECT * FROM Claim WHERE claim_id = $1";
+  const query = 'SELECT * FROM "Claim" WHERE claim_id = $1';
 
   try {
     const result = await database.query(query, [claim_id]);
@@ -16,35 +16,36 @@ exports.getClaim = async (req, res) => {
 
 // 삭제 요청된 클레임 정보 가져오기 -> /claims?is_deleted=2
 exports.getDelRequestClaims = async (is_deleted) => {
-  const query = "SELECT * FROM Claim WHERE delete_approval = $1";
+  const query = 'SELECT * FROM "Claim" WHERE delete_approval = $1';
   const result = await database.query(query, [is_deleted]);
   return result.rows;
 };
 
 // 특정 유저의 상태별 클레임 정보 가져오기 -> /claims?process={process_name}&user={id}
 exports.getUserClaimsByProcess = async (process, user_id) => {
-  const query = "SELECT * FROM Claim WHERE last_assigned = $1 AND user_id = $2";
+  const query =
+    'SELECT * FROM "Claim" WHERE last_assigned = $1 AND user_id = $2';
   const result = await database.query(query, [process, user_id]);
   return result.rows;
 };
 
 // 특정 유저의 해당하는 모든 클레임 정보 가져오기 -> /claims?user={id}
 exports.getUserClaims = async (user_id) => {
-  const query = "SELECT * FROM Claim WHERE user_id = $1";
+  const query = 'SELECT * FROM "Claim" WHERE user_id = $1';
   const result = await database.query(query, [user_id]);
   return result.rows;
 };
 
 // 특정 진행상황인 클레임들 가져오기 -> /claims?process={process_id}
 exports.getClaimsByProcess = async (process) => {
-  const query = "SELECT * FROM claim WHERE last_assigned = $1";
+  const query = 'SELECT * FROM "Claim" WHERE last_assigned = $1';
   const result = await database.query(query, [process]);
   return result.rows;
 };
 
 //claims에 있는 모든 정보 가져오기 -> /claims
 exports.getAllClaims = async () => {
-  const query = "SELECT * FROM Claim";
+  const query = 'SELECT * FROM "Claim"';
   const result = await database.query(query);
   return result.rows;
 };
@@ -53,7 +54,7 @@ exports.getAllClaims = async () => {
 // history_id에 해당하는 상담이력 정보 가져오기
 exports.getHistory = async (req, res) => {
   const { history_id } = req.params;
-  const query = "SELECT * FROM Call_History WHERE history_id = $1";
+  const query = 'SELECT * FROM "Call_History" WHERE history_id = $1';
 
   try {
     const result = await database.query(query, [history_id]);
@@ -66,7 +67,7 @@ exports.getHistory = async (req, res) => {
 //특정 claim_id 기준 모든 상담이력 불러오기 -> /histories?claim={id}
 exports.getClaimHistories = async (req, res) => {
   const { claim } = req.query;
-  const query = "SELECT * FROM Call_History WHERE Claim_id = $1";
+  const query = 'SELECT * FROM "Call_History" WHERE Claim_id = $1';
   try {
     const result = await database.query(query, [claim]);
     return res.status(200).json(result.rows);
@@ -86,7 +87,7 @@ exports.newHistory = async (req, res) => {
     await client.query("BEGIN"); // 트랜잭션 시작
     // 첫번째 쿼리
     const result = await client.query(
-      "INSERT INTO Claim (claim_type_idx, user_id, last_comment, last_manager,last_assigned, document, compensation) VALUES($1, $2, $3, $4, $5, $6, $7)RETURNING claim_id",
+      'INSERT INTO "Claim" (claim_type_idx, user_id, last_comment, last_manager,last_assigned, document, compensation) VALUES($1, $2, $3, $4, $5, $6, $7)RETURNING claim_id',
       [
         claim_type_idx,
         user_id,
@@ -102,7 +103,7 @@ exports.newHistory = async (req, res) => {
     // 두번째 쿼리
     const now = new Date();
     await client.query(
-      "INSERT INTO Call_History (claim_id, manager_idx, progress_idx, comment, history_created_at) VALUES($1, $2, $3, $4, $5)",
+      'INSERT INTO "Call_History" (claim_id, manager_idx, progress_idx, comment, history_created_at) VALUES($1, $2, $3, $4, $5)',
       [claim_id, manager_idx, progress_idx, comment, now]
     );
     await client.query("COMMIT"); // 트랜잭션 커밋
@@ -125,13 +126,13 @@ exports.appendHistory = async (req, res) => {
     await client.query("BEGIN");
     // 첫번째 쿼리
     await client.query(
-      "Insert Into Call_History (claim_id, manager_idx, progress_idx, comment, history_created_at) values($1, $2, $3, $4, $5)",
+      'INSERT INTO "Call_History" (claim_id, manager_idx, progress_idx, comment, history_created_at) VALUES($1, $2, $3, $4, $5)',
       [claim_id, manager_idx, progress_idx, comment, now]
     );
 
     // 두번째 쿼리
     await client.query(
-      "Update Claim Set last_comment = $1, last_manager = $2, last_assigned = $3 where claim_id = $4",
+      'UPDATE "Claim" Set last_comment = $1, last_manager = $2, last_assigned = $3 WHERE claim_id = $4',
       [comment, manager_idx, progress_idx, claim_id]
     );
     await client.query("COMMIT");
