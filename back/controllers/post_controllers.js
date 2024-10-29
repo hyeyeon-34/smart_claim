@@ -59,7 +59,7 @@ exports.appendHistory = async (req, res) => {
       [comment, manager_idx, progress_idx, claim_id]
     );
     await client.query("COMMIT");
-    res.status(201).send("History updated and claim created successfully");
+    res.status(201).send("History created and claim updated successfully");
   } catch (error) {
     await client.query("ROLLBACK");
     res.status(500).json({ error: error.message });

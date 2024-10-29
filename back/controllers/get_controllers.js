@@ -82,12 +82,54 @@ exports.getHistory = async (req, res) => {
 
 //특정 claim_id 기준 모든 상담이력 불러오기
 exports.getClaimHistories = async (req, res) => {
-  const { claim_id } = req.params;
+  const {claim} = req.query;
   const query = "SELECT * FROM Call_History WHERE Claim_id = $1";
   try {
-    const result = await database.query(query, [claim_id]);
+    const result = await database.query(query, [claim]);
     return res.status(200).json(result.rows);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 };
+
+// 특정 claim_id 기준 모든 서류 가져오기
+exports.getAllDocs = async(req,res) =>{
+  const {claim} = req.query;
+  const query = "SELECT * from Document_Status WHERE Claim_id = $1";
+  try {
+    const result = await database.query(query, [claim]);
+    return res.status(200).json(result.rows);
+  } catch (error) {
+    return res.status(500).json({error : error.message})
+  }
+}
+
+////////////상담사 조회////////////////////
+exports.getAllMangers = async(req,res) =>{
+  const query = "SELECT * from Manager"
+  try {
+    const result = await database.query(query);
+    return res.status(200).json(result.rows)
+  } catch (error) {
+    return res.status(500).json({error:error.message})
+  }
+}
+
+exports.getManager = async(req, res) =>{
+  const {manager_idx} = req.params
+  const query = "SELECT * from Manager WHERE manager_idx=$1"
+  try {
+    const result = await database.query(query,[manager_idx]);
+    return res.status(200).json(result.rows)
+  } catch (error) {
+    return res.status(500).json({error : error.message})
+  }
+}
+
+
+// 상담사가 검토 후 보험사에게 승인 요청 보낸 서류 가져오기 
+// exports.getApprovalDocs = async(req, res) =>{
+//   const {}
+// }
+
+

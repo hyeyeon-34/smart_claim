@@ -10,14 +10,17 @@ const {
   getUserClaimsByProcess,
   getHistory,
   getClaimHistories,
+  getAllDocs,
+  getAllMangers,
+  getManager,
 } = require("../controllers/get_controllers");
 
 ///////////////////////// 유저 조회 엔드포인트 /////////////////////////
 router.get("/users", getUsers); // 모든 유저 조회
-router.get("/users/:user-id", getUser); // 특정 유저 조회
+router.get("/users/:user_id", getUser); // 특정 유저 조회
 
 ///////////////////////// 클레임 조회 엔드포인트 /////////////////////////
-router.get("/claims/:claim-id", getClaim); // 특정 클레임 조회
+router.get("/claims/:claim_id", getClaim); // 특정 클레임 조회
 // /claims: 모든 클레임 조회 또는 조건부 조회 (process, user_id 포함)
 router.get("/claims", async (req, res) => {
   const { process, user } = req.query;
@@ -46,7 +49,14 @@ router.get("/claims", async (req, res) => {
 });
 
 ///////////////////////// 상담 이력 조회 엔드포인트 /////////////////////////
-router.get("/histories/:history-id", getHistory); // 특정 상담 이력 조회
-router.get("/claims/:claim-id/histories", getClaimHistories); // 특정 클레임의 모든 상담 이력 조회
+router.get("/histories/:history_id", getHistory); // 특정 상담 이력 조회
+router.get("/histories", getClaimHistories); // 특정 클레임의 모든 상담 이력 조회
 
+///////////////////////// 상담사 조회 엔드포인트 ////////////////////////////
+router.get('/managers',getAllMangers) // 상담사 정보 모두 가져오기 
+router.get('/managers/:manager_idx', getManager) // 특정 상담사 정보 가져오기 
+
+
+///////////////////////// 서류 조회 엔드포인트 /////////////////////////
+router.get('/documents', getAllDocs) // 특정 클레임에 해당하는 모든 서류 가져오기 
 module.exports = router;
