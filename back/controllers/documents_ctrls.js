@@ -18,6 +18,4 @@ const database = require("../database/database");
 
 // 서류에 대한 상담사 코멘트 수정
 
-// 상담사 서류 검토 완료 (클레임 테이블의 상태값 변경)
-
 // 보험사 서류 승인 여부

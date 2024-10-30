@@ -1,0 +1,23 @@
+DROP TABLE IF EXISTS 
+    document_statuses,
+    conversation_contents,
+    call_histories,
+    compensation_processes,
+    replacement_devices,
+    repairment_cash,
+    vouchers,
+    inbound_callbots,
+    outbound_callbots,
+    claims,
+    claim_types,
+    compensation_types,
+    insurers,
+    satisfactions,
+    required_documents,
+    progresses,
+    managers,
+    positions,
+    phone_models,
+    chatbots,
+    users 
+CASCADE;
