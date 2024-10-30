@@ -74,6 +74,6 @@ router.patch('/histories/:history_id', updateHistory);
 
 // ------------------------------ DELETE claims ------------------------------
 // 특정 클레임 삭제 승인
-router.delete('/claims/:claim_id', approveDeleteClaim);
+router.patch('/claims/:claim_id/approve_delete', approveDeleteClaim);
 
 module.exports = router;
