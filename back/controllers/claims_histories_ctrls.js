@@ -67,7 +67,7 @@ exports.getHistory = async (req, res) => {
 //특정 claim_id 기준 모든 상담이력 불러오기 -> /histories?claim={id}
 exports.getClaimHistories = async (req, res) => {
   const { claim } = req.query;
-  const query = "SELECT * FROM call_histories WHERE Claim_id = $1";
+  const query = "SELECT * FROM call_histories WHERE claim_id = $1";
   try {
     const result = await database.query(query, [claim]);
     return res.status(200).json(result.rows);
@@ -87,24 +87,16 @@ exports.newHistory = async (req, res) => {
     await client.query("BEGIN"); // 트랜잭션 시작
     // 첫번째 쿼리
     const result = await client.query(
-      "INSERT INTO claims (claim_type_idx, user_id, last_comment, last_manager,last_assigned, document, compensation) VALUES($1, $2, $3, $4, $5, $6, $7)RETURNING claim_id",
-      [
-        claim_type_idx,
-        user_id,
-        comment,
-        manager_idx,
-        progress_idx,
-        false,
-        false,
-      ]
+      "INSERT INTO claims (claim_type_idx, user_id, last_comment, last_manager,last_assigned) VALUES($1, $2, $3, $4, $5)RETURNING claim_id",
+      [claim_type_idx, user_id, comment, manager_idx, progress_idx]
     );
     const claim_id = String(result.rows[0].claim_id);
+    console.log(claim_id);
 
     // 두번째 쿼리
-    const now = new Date();
     await client.query(
-      "INSERT INTO call_histories (claim_id, manager_idx, progress_idx, comment, history_created_at) VALUES($1, $2, $3, $4, $5)",
-      [claim_id, manager_idx, progress_idx, comment, now]
+      "INSERT INTO call_histories (claim_id, manager_idx, progress_idx, manager_comment) VALUES($1, $2, $3, $4)",
+      [claim_id, manager_idx, progress_idx, comment]
     );
     await client.query("COMMIT"); // 트랜잭션 커밋
     res.status(201).send("History and claim created successfully");
@@ -119,15 +111,14 @@ exports.newHistory = async (req, res) => {
 // 기존 클레임과 새로운 히스토리 연결
 exports.appendHistory = async (req, res) => {
   const client = await database.connect();
-  const now = new Date();
   const { claim_id, manager_idx, progress_idx, comment } = req.body;
 
   try {
     await client.query("BEGIN");
     // 첫번째 쿼리
     await client.query(
-      "INSERT INTO call_histories (claim_id, manager_idx, progress_idx, comment, history_created_at) VALUES($1, $2, $3, $4, $5)",
-      [claim_id, manager_idx, progress_idx, comment, now]
+      "INSERT INTO call_histories (claim_id, manager_idx, progress_idx, manager_comment) VALUES($1, $2, $3, $4)",
+      [claim_id, manager_idx, progress_idx, comment]
     );
 
     // 두번째 쿼리

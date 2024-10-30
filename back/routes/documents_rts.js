@@ -1,11 +1,37 @@
 const router = require("express").Router();
 
+const {
+  getDocsByClaim,
+  getPendingDocs,
+  getAllDocs,
+} = require("../controllers/documents_ctrls");
+
 // ------------------------------ GET documents ------------------------------
 // 필요서류 조회
 
 // 제출한 서류 조회
-
 // 승인대기 중인 서류 조회 (상담사 검토가 완료된 서류)
+router.get("/documents", async (req, res) => {
+  const { claim, process } = req.query;
+
+  try {
+    if (claim) {
+      // 각 클레임 건에 대해 제출한 서류 조회 -> /documents?claim={id}
+      const result = await getDocsByClaim(claim);
+      res.status(200).json(result);
+    } else if (process) {
+      // 승인대기 중인 서류 조회 (상담사 검토가 완료된 서류) -> /documents?process=3
+      const result = await getPendingDocs(process);
+      res.status(200).json(result);
+    } else {
+      // 모든 서류 조회
+      const result = await getAllDocs();
+      res.status(200).json(result);
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // ------------------------------ POST documents ------------------------------
 // 서류 등록
@@ -17,8 +43,6 @@ const router = require("express").Router();
 // 서류 수정
 
 // 서류에 대한 상담사 코멘트 수정
-
-// 상담사 서류 검토 완료 (클레임 테이블의 상태값 변경)
 
 // 보험사 서류 승인 여부
 

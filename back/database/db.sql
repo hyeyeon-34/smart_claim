@@ -51,6 +51,7 @@ CREATE TABLE claims (
     last_manager INT,
     last_assigned INT,
     delete_approval INT DEFAULT 0
+    last_comment TEXT
 );
 
 CREATE TABLE progresses (

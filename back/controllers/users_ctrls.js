@@ -28,7 +28,7 @@ exports.getUsers = async (req, res) => {
 // 특정 고객 정보 변경 -> /users/:user_id
 exports.patchUser = async (req, res) => {
   const { user_id } = req.params;
-  const { model_idx, pn, email, gender } = req.body;
+  const { model_idx, user_pn, email, gender } = req.body;
   try {
     query = "SELECT * FROM users WHERE user_id = $1";
     const userResult = await database.query(query, [user_id]);
@@ -36,10 +36,10 @@ exports.patchUser = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
     const updateResult = await database.query(
-      "UPDATE users SET gender = $1, model_idx = $2, pn = $3, email = $4, WHERE user_id = $5",
-      [gender, model_idx, pn, email, user_id]
+      "UPDATE users SET gender = $1, model_idx = $2, user_pn = $3, email = $4 WHERE user_id = $5",
+      [gender, model_idx, user_pn, email, user_id]
     );
-    return res.status(200).json(updateResult.rows);
+    return res.status(200).json({ msg: "User info updated successfully." });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
