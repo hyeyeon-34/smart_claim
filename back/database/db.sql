@@ -50,6 +50,7 @@ CREATE TABLE claims (
     user_id INT NOT NULL,
     last_manager INT,
     last_assigned INT,
+    last_comment TEXT,
     delete_approval INT DEFAULT 0
     last_comment TEXT
 );

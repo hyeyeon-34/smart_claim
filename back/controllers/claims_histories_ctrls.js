@@ -139,13 +139,168 @@ exports.appendHistory = async (req, res) => {
 // --------------------------- POST satisfaction ---------------------------
 // 특정 상담에 대한 만족도 등록
 
+exports.addSatisfaction = async (req, res) => {
+  const client = await database.connect();
+  const {
+    history_id,
+    overall_satisfaction,
+    response_time,
+    friendliness,
+    compensation_result,
+    customer_comment,
+  } = req.body;
+
+  try {
+    await client.query("BEGIN"); // 트랜잭션 시작
+
+    // `overall_satisfaction`이 3 이하인 경우에만 추가 필드 체크
+    if (overall_satisfaction <= 3) {
+      if (
+        response_time === undefined ||
+        friendliness === undefined ||
+        compensation_result === undefined
+      ) {
+        throw new Error(
+          "response_time, friendliness, compensation_result 값을 모두 입력해야 합니다."
+        );
+      }
+    }
+
+    const query = `
+      INSERT INTO satisfactions (history_id, overall_satisfaction, response_time, friendliness, compensation_result, customer_comment)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `;
+    const values = [
+      history_id,
+      overall_satisfaction,
+      overall_satisfaction <= 3 ? response_time : null, // 3 이하일 경우만 입력
+      overall_satisfaction <= 3 ? friendliness : null, // 3 이하일 경우만 입력
+      overall_satisfaction <= 3 ? compensation_result : null, // 3 이하일 경우만 입력
+      customer_comment,
+    ];
+
+    await client.query(query, values);
+    await client.query("COMMIT"); // 트랜잭션 커밋
+    res.status(201).send("Satisfaction data added successfully");
+  } catch (error) {
+    await client.query("ROLLBACK"); // 트랜잭션 롤백
+    res.status(500).json({ error: error.message });
+  } finally {
+    client.release(); // 데이터베이스 연결 해제
+  }
+};
+
 // ------------------------------ PATCH claims ------------------------------
 // 특정 클레임 수정
 
+exports.updateClaim = async (req, res) => {
+  const client = await database.connect();
+  const { claim_id } = req.params; // URL 파라미터에서 claim_id 가져오기
+  const updateFields = req.body; // 요청의 바디에 포함된 필드만 업데이트
+
+  // 업데이트할 필드가 없는 경우 오류 응답
+  if (!Object.keys(updateFields).length) {
+    return res.status(400).json({ error: "No fields provided for update" });
+  }
+
+  try {
+    await client.query("BEGIN"); // 트랜잭션 시작
+
+    // 쿼리 생성
+    const setClause = Object.keys(updateFields)
+      .map((field, index) => `${field} = $${index + 1}`)
+      .join(", ");
+    const values = [...Object.values(updateFields), claim_id];
+
+    const query = `UPDATE claims SET ${setClause} WHERE claim_id = $${values.length}`;
+
+    await client.query(query, values); // 필드들 업데이트
+    await client.query("COMMIT"); // 트랜잭션 커밋
+    res.status(200).send("Claim updated successfully");
+  } catch (error) {
+    await client.query("ROLLBACK"); // 트랜잭션 롤백
+    res.status(500).json({ error: error.message });
+  } finally {
+    client.release(); // 데이터베이스 연결 해제
+  }
+};
+
 // 특정 클레임 삭제 요청
+exports.requestDeleteClaim = async (req, res) => {
+  const client = await database.connect();
+  const { claim_id } = req.params; // URL 파라미터에서 claim_id 가져오기
+
+  try {
+    await client.query("BEGIN"); // 트랜잭션 시작
+    const query = `
+      UPDATE claims
+      SET delete_approval = 1
+      WHERE claim_id = $1
+    `;
+    await client.query(query, [claim_id]);
+    await client.query("COMMIT"); // 트랜잭션 커밋
+    res.status(200).send("Delete request for claim submitted successfully");
+  } catch (error) {
+    await client.query("ROLLBACK"); // 트랜잭션 롤백
+    res.status(500).json({ error: error.message });
+  } finally {
+    client.release(); // 데이터베이스 연결 해제
+  }
+};
 
 // ----------------------------- PATCH histories -----------------------------
 // 특정 상담이력 수정
+exports.updateHistory = async (req, res) => {
+  const client = await database.connect();
+  const { history_id } = req.params; // URL 파라미터에서 history_id 가져오기
+  const updateFields = req.body;
+
+  // 업데이트할 필드가 없는 경우 오류 응답
+  if (!Object.keys(updateFields).length) {
+    return res.status(400).json({ error: "No fields provided for update" });
+  }
+
+  try {
+    await client.query("BEGIN"); // 트랜잭션 시작
+
+    // 쿼리 생성
+    const setClause = Object.keys(updateFields)
+      .map((field, index) => `${field} = $${index + 1}`)
+      .join(", ");
+    const values = [...Object.values(updateFields), history_id];
+
+    const query = `UPDATE call_histories SET ${setClause} WHERE history_id = $${values.length}`;
+
+    await client.query(query, values); // 필드들 업데이트
+    await client.query("COMMIT"); // 트랜잭션 커밋
+    res.status(200).send("call history updated successfully");
+  } catch (error) {
+    await client.query("ROLLBACK"); // 트랜잭션 롤백
+    res.status(500).json({ error: error.message });
+  } finally {
+    client.release(); // 데이터베이스 연결 해제
+  }
+};
 
 // ------------------------------ DELETE claims ------------------------------
 // 특정 클레임 삭제 승인
+exports.approveDeleteClaim = async (req, res) => {
+  const client = await database.connect();
+  const { claim_id } = req.params; // URL 파라미터에서 claim_id 가져오기
+
+  try {
+    await client.query("BEGIN"); // 트랜잭션 시작
+    const query = `
+      DELETE FROM claims
+      WHERE claim_id = $1
+    `;
+    await client.query(query, [claim_id]);
+    await client.query("COMMIT"); // 트랜잭션 커밋
+    res.status(200).send("Claim deleted successfully");
+  } catch (error) {
+    await client.query("ROLLBACK"); // 트랜잭션 롤백
+    res.status(500).json({ error: error.message });
+  } finally {
+    client.release(); // 데이터베이스 연결 해제
+  }
+};

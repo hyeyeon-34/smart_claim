@@ -1,4 +1,4 @@
-const router = require("express").Router();
+const router = require('express').Router();
 
 const {
   getClaim,
@@ -11,11 +11,16 @@ const {
   getClaimHistories,
   newHistory,
   appendHistory,
-} = require("../controllers/claims_histories_ctrls");
+  updateClaim,
+  requestDeleteClaim,
+  updateHistory,
+  approveDeleteClaim,
+  addSatisfaction,
+} = require('../controllers/claims_histories_ctrls');
 
 // ------------------------------- GET claims -------------------------------
-router.get("/claims/:claim_id", getClaim);
-router.get("/claims", async (req, res) => {
+router.get('/claims/:claim_id', getClaim);
+router.get('/claims', async (req, res) => {
   const { process, user, is_deleted } = req.query;
 
   try {
@@ -45,25 +50,30 @@ router.get("/claims", async (req, res) => {
 });
 
 // ------------------------------ GET histories ------------------------------
-router.get("/histories/:history_id", getHistory); // 특정 상담 이력 조회
-router.get("/histories", getClaimHistories); // 특정 클레임의 모든 상담 이력 조회 -> /histories?claim={id}
+router.get('/histories/:history_id', getHistory); // 특정 상담 이력 조회
+router.get('/histories', getClaimHistories); // 특정 클레임의 모든 상담 이력 조회 -> /histories?claim={id}
 
 // ------------------------ POST claims and histories ------------------------
-router.post("/claims", newHistory);
-router.post("/call-histories", appendHistory);
+router.post('/claims', newHistory);
+router.post('/call-histories', appendHistory);
 
 // --------------------------- POST satisfaction ---------------------------
 // 특정 상담에 대한 만족도 등록
+router.post('/satisfactions', addSatisfaction);
 
 // ------------------------------ PATCH claims ------------------------------
 // 특정 클레임 수정
+router.patch('/claims/:claim_id', updateClaim);
 
 // 특정 클레임 삭제 요청
+router.patch('/claims/:claim_id/request_delete', requestDeleteClaim);
 
 // ----------------------------- PATCH histories -----------------------------
 // 특정 상담이력 수정
+router.patch('/histories/:history_id', updateHistory);
 
 // ------------------------------ DELETE claims ------------------------------
 // 특정 클레임 삭제 승인
+router.delete('/claims/:claim_id', approveDeleteClaim);
 
 module.exports = router;
