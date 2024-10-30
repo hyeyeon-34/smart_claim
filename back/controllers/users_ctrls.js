@@ -30,19 +30,43 @@ exports.patchUser = async (req, res) => {
   const { user_id } = req.params;
   const { model_idx, user_pn, email, gender } = req.body;
   try {
-    query = "SELECT * FROM users WHERE user_id = $1";
-    const userResult = await database.query(query, [user_id]);
+    const userResult = await database.query(
+      "SELECT * FROM users WHERE user_id = $1",
+      [user_id]
+    );
     if (userResult.rows.length === 0) {
       return res.status(404).json({ error: "User not found" });
     }
-    const updateResult = await database.query(
-      "UPDATE users SET gender = $1, model_idx = $2, user_pn = $3, email = $4 WHERE user_id = $5",
-      [gender, model_idx, user_pn, email, user_id]
-    );
+    query =
+      "UPDATE users SET gender = $1, model_idx = $2, user_pn = $3, email = $4 WHERE user_id = $5";
+    const updateResult = await database.query(query, [
+      gender,
+      model_idx,
+      user_pn,
+      email,
+      user_id,
+    ]);
     return res.status(200).json({ msg: "User info updated successfully." });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
+};
+
+// 특정 고객 보험 해지 -> /users/:user_id/cancel-insurance
+exports.patchInsuranceStatus = async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const userResult = await database.query(
+      "SELECT * FROM users WHERE user_id = $1",
+      [user_id]
+    );
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    query = "UPDATE users SET cancellation_status = true WHERE user_id = $1";
+    await database.query(query, [user_id]);
+    return res.status(200).json({ msg: "Cancel insurance successfully" });
+  } catch (error) {}
 };
 
 // ------------------------------- POST users -------------------------------
