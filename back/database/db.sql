@@ -160,7 +160,7 @@ CREATE TABLE compensation_processes (
     claim_id INT NOT NULL,
     compensation_type_idx INT NOT NULL,
     insurer_id INT NOT NULL,
-    compensation_status VARCHAR(50) NOT NULL,
+    progress_idx INT NOT NULL,
     compensation_created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     compensation_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     compensation_insurer_comment TEXT

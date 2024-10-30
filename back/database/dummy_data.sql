@@ -70,7 +70,7 @@ INSERT INTO claims (claim_type_idx, user_id, last_manager, last_assigned, delete
 (1, 15, 15, 15, 0), (1, 16, 16, 16, 0), (3, 17, 17, 17, 0),
 (1, 18, 18, 18, 0), (1, 19, 19, 19, 1), (1, 20, 20, 20, 2);
 
-INSERT INTO progresses (progress_status) VALUES ('심사접수'), ('서류접수'), ('보상심사'), ('보상완료'), ('반려'), ('통화처리');
+INSERT INTO progresses (progress_status) VALUES ('심사접수'), ('서류접수'), ('보상심사'), ('보상승인'), ('반려'),('보상지급완료') ('통화처리');
 
 INSERT INTO insurers (insurer_name, insurer_userid, insurer_password) VALUES
 ('ABC Insurance', 'abc_user', 'abc_pass123'),
@@ -162,22 +162,73 @@ INSERT INTO document_statuses (claim_id, required_document_idx, insurer_idx, sub
 (4, 4, 3, TRUE, TRUE, '/docs/claim18_legal.pdf', '확인', '검토 완료'),
 (4, 5, 3, FALSE, FALSE, '/docs/claim19_additional.pdf', '확인', '검토 완료')
 
--- INSERT INTO compensation_types (compensation_type_name) VALUES
--- (),(), ...
+INSERT INTO compensation_types (compensation_type_name) VALUES
+(1, 수리지원금),
+(2, 대체기기지급),
+(3, 상품권)
 
--- INSERT INTO compensation_processes (claim_id, compensation_type_idx, insurer_id, compensation_status, compensation_insurer_comment) VALUES
--- (), (), ...
+INSERT INTO compensation_processes (
+    "compensation_id", "claim_id", "compensation_type_idx", "insurer_id",
+    "progress_idx", "compensation_created_at", "compensation_updated_at", 
+    "compensation_insurer_comment"
+) VALUES
+    (1, 1, 1, 1, 3, '2024-10-01 09:15:00', '2024-10-02 12:00:00', '보상 신청 접수 완료'),
+    (2, 2, 2, 1, 3, '2024-10-02 11:45:00', '2024-10-03 14:00:00', '서류 검토 중'),
+    (3, 3, 1, 2, 6, '2024-10-04 10:30:00', '2024-10-05 09:00:00', '보상 금액 지급 완료'),
+    (4, 4, 3, 2, 5, '2024-10-05 14:00:00', '2024-10-06 16:30:00', '서류 미비로 반려'),
+    (5, 5, 2, 3, 3, '2024-10-07 08:00:00', '2024-10-07 15:30:00', '')
 
 
+INSERT INTO replacement_devices ("replacement_id", "compensation_id", "model_idx", "replacement_recipient_name", "replacement_contact_number", "recipient_state", "recipient_city", "recipient_address1", "recipient_address2", "recipient_post_number", "tracking_number", "delivery_status", "replacement_created_at", "replacement_updated_at") VALUES
+    (1, 1, 1, '김철수', '010-1234-5678', '서울특별시', '강남구', '테헤란로 123', NULL, '06233', 'TRK001', '배송 중', '2024-01-01', '2024-01-02'),
+    (2, 2, 2, '이영희', '010-2345-6789', '부산광역시', '해운대구', '해운대로 456', '101호', '48094', 'TRK002', '배송 완료', '2024-01-06', '2024-01-07'),
+    (3, 3, 3, '박민수', '010-3456-7890', '대구광역시', '수성구', '수성로 789', '102호', '42050', 'TRK003', '배송 중', '2024-01-10', '2024-01-11'),
+    (4, 4, 4, '정수영', '010-4567-8901', '인천광역시', '남동구', '남동대로 123', '203호', '21556', 'TRK004', '배송 대기', '2024-01-15', '2024-01-16'),
+    (5, 5, 5, '최지훈', '010-5678-9012', '광주광역시', '북구', '북구로 456', '301호', '61025', 'TRK005', '배송 완료', '2024-01-20', '2024-01-21'),
+    (6, 6, 6, '김지혜', '010-6789-0123', '대전광역시', '서구', '서구로 789', '401호', '35233', 'TRK006', '배송 중', '2024-01-25', '2024-01-26'),
+    (7, 7, 7, '홍길동', '010-7890-1234', '울산광역시', '남구', '남구로 123', NULL, '44724', 'TRK007', '배송 완료', '2024-02-01', '2024-02-02'),
+    (8, 8, 8, '오영식', '010-8901-2345', '경기도', '수원시', '수원로 456', '501호', '16455', 'TRK008', '배송 대기', '2024-02-05', '2024-02-06'),
+    (9, 9, 9, '서미나', '010-9012-3456', '경상북도', '포항시', '포항로 789', '601호', '37758', 'TRK009', '배송 중', '2024-02-10', '2024-02-11'),
+    (10, 10, 10, '이정민', '010-0123-4567', '제주특별자치도', '제주시', '제주로 123', '701호', '63212', 'TRK010', '배송 완료', '2024-02-15', '2024-02-16');
 
--- satisfactions
 
--- repairment_cash
+INSERT INTO repairment_cash ("repairment_cash_id", "compensation_id", "repairment_recipient_name", "repairment_contact_number", "repairment_amount", "bank_name", "bank_account", "transfer_status", "repairment_created_at", "repairment_updated_at") VALUES
+    (1, 1, '김철수', '010-1234-5678', 50000, '우리은행', '1002-123-456789', '이체 완료', '2024-01-01', '2024-01-02'),
+    (2, 2, '이영희', '010-2345-6789', 100000, '국민은행', '1234-567-890123', '이체 완료', '2024-01-06', '2024-01-07'),
+    (3, 3, '박민수', '010-3456-7890', 75000, '농협은행', '352-1234-567890', '이체 대기', '2024-01-10', '2024-01-11'),
+    (4, 4, '정수영', '010-4567-8901', 120000, '신한은행', '110-2345-678901', '이체 완료', '2024-01-15', '2024-01-16'),
+    (5, 5, '최지훈', '010-5678-9012', 65000, '하나은행', '620-3456-789012', '이체 대기', '2024-01-20', '2024-01-21'),
+    (6, 6, '김지혜', '010-6789-0123', 80000, '카카오뱅크', '3333-012-3456789', '이체 완료', '2024-01-25', '2024-01-26'),
+    (7, 7, '홍길동', '010-7890-1234', 95000, '케이뱅크', '010-2345-678901', '이체 대기', '2024-02-01', '2024-02-02'),
+    (8, 8, '오영식', '010-8901-2345', 70000, '우리은행', '1002-456-789012', '이체 완료', '2024-02-05', '2024-02-06'),
+    (9, 9, '서미나', '010-9012-3456', 85000, '신한은행', '110-5678-901234', '이체 대기', '2024-02-10', '2024-02-11'),
+    (10, 10, '이정민', '010-0123-4567', 55000, '국민은행', '1234-789-012345', '이체 완료', '2024-02-15', '2024-02-16');
 
--- replacement_devices
 
--- vouchers
+INSERT INTO vouchers ("voucher_id", "compensation_id", "voucher_recipient_name", "voucher_contact_number", "voucher_type", "voucher_value", "voucher_sent_status", "voucher_created_at", "voucher_updated_at") VALUES
+    (1, 1, '김철수', '010-1234-5678', '상품권', 30000, '발송 완료', '2024-01-01', '2024-01-02'),
+    (2, 2, '이영희', '010-2345-6789', '상품권', 50000, '발송 대기', '2024-01-06', '2024-01-07'),
+    (3, 3, '박민수', '010-3456-7890', '상품권', 40000, '발송 완료', '2024-01-10', '2024-01-11'),
+    (4, 4, '정수영', '010-4567-8901', '상품권', 60000, '발송 대기', '2024-01-15', '2024-01-16'),
+    (5, 5, '최지훈', '010-5678-9012', '상품권', 45000, '발송 완료', '2024-01-20', '2024-01-21'),
+    (6, 6, '김지혜', '010-6789-0123', '상품권', 70000, '발송 대기', '2024-01-25', '2024-01-26'),
+    (7, 7, '홍길동', '010-7890-1234', '상품권', 55000, '발송 완료', '2024-02-01', '2024-02-02'),
+    (8, 8, '오영식', '010-8901-2345', '상품권', 75000, '발송 대기', '2024-02-05', '2024-02-06'),
+    (9, 9, '서미나', '010-9012-3456', '상품권', 65000, '발송 완료', '2024-02-10', '2024-02-11'),
+    (10, 10, '이정민', '010-0123-4567', '상품권', 35000, '발송 대기', '2024-02-15', '2024-02-16');
 
+
+INSERT INTO Satisfactions ("satisfaction_id", "history_id", "overall_satisfaction", "response_time", "friendliness", "compensation_result", "customer_comment") VALUES
+(1, 1, 5, NULL, NULL, NULL, 'Excellent service.'),
+(2, 2, 3, 4, 2, 5, 'Had a few issues, but resolved well.'),
+(3, 3, 2, 3, 2, 5, 'Service could be better.'),
+(4, 4, 4, NULL, NULL, NULL, NULL),
+(5, 5, 1, 1, 3, 4, 'Not satisfied with the resolution.'),
+(6, 6, 5, NULL, NULL, NULL, 'Great experience.'),
+(7, 7, 3, 5, 1, 3, 'Mixed feelings about the service.'),
+(8, 8, 2, 2, 1, 5, 'Needs improvement.'),
+(9, 9, 4, NULL, NULL, NULL, 'Satisfied with the outcome.'),
+(10, 10, 1, 2, 4, 2, NULL);
 
 
 -- chatbots
