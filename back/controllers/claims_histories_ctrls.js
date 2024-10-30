@@ -234,7 +234,7 @@ exports.requestDeleteClaim = async (req, res) => {
     await client.query("BEGIN"); // 트랜잭션 시작
     const query = `
       UPDATE claims
-      SET delete_approval = 1
+      SET delete_approval = 2
       WHERE claim_id = $1
     `;
     await client.query(query, [claim_id]);
@@ -291,12 +291,13 @@ exports.approveDeleteClaim = async (req, res) => {
   try {
     await client.query("BEGIN"); // 트랜잭션 시작
     const query = `
-      DELETE FROM claims
-      WHERE claim_id = $1
-    `;
+        UPDATE claims
+        SET delete_approval = 1
+        WHERE claim_id = $1
+      `;
     await client.query(query, [claim_id]);
     await client.query("COMMIT"); // 트랜잭션 커밋
-    res.status(200).send("Claim deleted successfully");
+    res.status(200).send("Delete request for claim submitted successfully");
   } catch (error) {
     await client.query("ROLLBACK"); // 트랜잭션 롤백
     res.status(500).json({ error: error.message });
