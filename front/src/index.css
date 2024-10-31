@@ -1,0 +1,45 @@
+/* Basic styling for the layout */
+.App {
+  font-family: Arial, sans-serif;
+}
+
+.card-section {
+  padding: 50px 0;
+  text-align: center;
+}
+.cards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.card {
+  width: 200px;
+  padding: 20px;
+  margin: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: left;
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 40px 20px;
+  background-color: #f8f9fa;
+}
+.footer-logo {
+  font-weight: bold;
+}
+.footer-links {
+  margin: 0 10px;
+  display: flex;
+}
+
+.footer-links div {
+  margin: 0 10px;
+}
+
+.footer-links h4 {
+  margin-bottom: 10px;
+}
