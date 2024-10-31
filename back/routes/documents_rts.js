@@ -4,13 +4,14 @@ const {
   getDocsByClaim,
   getPendingDocs,
   getAllDocs,
+  upload,
+  postDocs,
 } = require("../controllers/documents_ctrls");
 
-// ------------------------------ GET documents ------------------------------
+// ----------------------------- GET documents -----------------------------
 // 필요서류 조회
 
-// 제출한 서류 조회
-// 승인대기 중인 서류 조회 (상담사 검토가 완료된 서류)
+// 조건에 따른 서류 조회(프로세스, 클레임 별)
 router.get("/documents", async (req, res) => {
   const { claim, process } = req.query;
 
@@ -33,13 +34,14 @@ router.get("/documents", async (req, res) => {
   }
 });
 
-// ------------------------------ POST documents ------------------------------
+// ---------------------------- POST documents ----------------------------
 // 서류 등록
+router.post("/documents/:claim_id", upload, postDocs);
 
-// ----------------------------- DELETE documents -----------------------------
+// --------------------------- DELETE documents ---------------------------
 // 서류 삭제
 
-// ----------------------------- PATCH documents -----------------------------
+// ---------------------------- PATCH documents ----------------------------
 // 서류 수정
 
 // 서류에 대한 상담사 코멘트 수정

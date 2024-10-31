@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, BrowserRouter } from 'react-router-dom';
 import Header from './components/Header';
@@ -8,6 +9,18 @@ import ManagerLogin from './pages/ManagerLogin';
 import InsurerLogin from './pages/InsurerLogin';
 import Mypage from './pages/Mypage';
 import ButtonTestPage from './test_pages/ButtonTestPage';
+=======
+import React, { useState, useEffect } from "react";
+import { Routes, Route, useNavigate, BrowserRouter } from "react-router-dom";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import UserLogin from "./pages/UserLogin";
+import ManagerLogin from "./pages/ManagerLogin";
+import InsurerLogin from "./pages/InsurerLogin";
+import Mypage from "./pages/Mypage";
+import Documents from "./testComponents/Documents";
+>>>>>>> 8ce5f2cd4bca5ff91d00930abf9258b789c23b03
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -15,7 +28,7 @@ function App() {
 
   // 컴포넌트가 처음 렌더링될 때 로컬 스토리지에서 로그인 상태를 확인
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true); // 토큰이 있으면 로그인 상태 유지
     }
@@ -26,10 +39,10 @@ function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('manager_userid'); // 필요에 따라 수정
+    localStorage.removeItem("token");
+    localStorage.removeItem("manager_userid"); // 필요에 따라 수정
     setIsLoggedIn(false);
-    navigate('/userlogin'); // 로그인 페이지로 리디렉션
+    navigate("/userlogin"); // 로그인 페이지로 리디렉션
   };
 
   return (
@@ -56,8 +69,13 @@ function App() {
           <Route path="/mypage" element={<Mypage />} />
           {/* 필요한 다른 경로를 여기에 추가 */}
 
+<<<<<<< HEAD
           {/* 테스트 페이지 */}
           <Route path="/test_button" element={<ButtonTestPage />} />
+=======
+          {/* test 컴포넌트 입니다. */}
+          <Route path="/documents/upload" element={<Documents />} />
+>>>>>>> 8ce5f2cd4bca5ff91d00930abf9258b789c23b03
         </Routes>
       </div>
 
