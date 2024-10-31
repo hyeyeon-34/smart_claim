@@ -11,7 +11,7 @@ const InsurerLogin = ({ onLogin }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('https://localhost:3000/login/insurer', {
+      const response = await fetch('http://localhost:8080/login/insurer', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
