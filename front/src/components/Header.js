@@ -21,7 +21,13 @@ const Header = ({ isLoggedIn, onLogout }) => {
         ) : (
           <>
             <h2 className="px-1 md:px-2 text-[#d4d6cc] hover:text-[#aaae9f]">
-              <Link to="/login">로그인 |</Link>
+              <Link to="/userlogin">고객 로그인 |</Link>
+            </h2>
+            <h2 className="px-1 md:px-2 text-[#d4d6cc] hover:text-[#aaae9f]">
+              <Link to="/managerlogin">상담사 로그인 |</Link>
+            </h2>
+            <h2 className="px-1 md:px-2 text-[#d4d6cc] hover:text-[#aaae9f]">
+              <Link to="/insurerlogin">보험사 로그인 |</Link>
             </h2>
             <h2 className="flex px-1 md:px-2 text-[#d4d6cc] hover:text-[#aaae9f]">
               <Link to="/mypage">마이페이지 </Link>
