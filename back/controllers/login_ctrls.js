@@ -1,4 +1,5 @@
 const database = require('../database/database');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // 고객 로그인
@@ -89,6 +90,48 @@ exports.insurerLogin = async (req, res) => {
       }
     );
     return res.status(200).json({ token });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+// 상담사 비밀번호 변경
+exports.changeManagerPassword = async (req, res) => {
+  const { manager_username, manager_userid, manager_pn, new_password } =
+    req.body;
+
+  const findQuery = `
+    SELECT manager_idx FROM managers 
+    WHERE manager_username = $1 AND manager_userid = $2 AND manager_pn = $3
+  `;
+
+  try {
+    // 1. 상담사 정보 확인
+    const result = await database.query(findQuery, [
+      manager_username,
+      manager_userid,
+      manager_pn,
+    ]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Invalid credentials' });
+    }
+
+    // 2. 새로운 비밀번호 암호화
+    const hashedPassword = await bcrypt.hash(new_password, 10);
+
+    // 3. 비밀번호 업데이트
+    const updateQuery = `
+      UPDATE managers 
+      SET manager_password = $1 
+      WHERE manager_idx = $2
+    `;
+    await database.query(updateQuery, [
+      hashedPassword,
+      result.rows[0].manager_idx,
+    ]);
+
+    return res.status(200).json({ message: 'Password updated successfully' });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
