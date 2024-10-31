@@ -1,9 +1,21 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
+from fastapi.middleware.cors import CORSMiddleware  # 외부 도메인의 API 접근을 허용하기 위한 CORS 미들웨어입니다.
+
 
 app = FastAPI()
 
+# CORS (Cross-Origin Resource Sharing) 허용을 위한 미들웨어 설정
+# 외부 도메인에서 API에 접근할 수 있도록 모든 출처의 요청을 허용하는 설정을 추가합니다.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 모든 출처의 클라이언트가 API에 접근 가능하도록 허용합니다.
+    allow_credentials=True,  # 클라이언트에서 인증 정보를 포함한 요청을 허용합니다.
+    allow_methods=["*"],  # 모든 HTTP 메서드(GET, POST, PUT, DELETE 등)를 허용합니다.
+    allow_headers=["*"],  # 모든 HTTP 헤더를 허용합니다.
+    expose_headers=["*"],  # 클라이언트가 볼 수 있는 HTTP 헤더를 명시하여 노출합니다.
+)
 
 
 # 랭체인 추적
@@ -306,4 +318,4 @@ if __name__ == "__main__":
 
     # 앱을 모든 네트워크 인터페이스("0.0.0.0")에서 8000번 포트로 실행합니다.
     # 이렇게 하면 로컬뿐 아니라 네트워크상의 다른 장치에서도 API에 접근할 수 있습니다.
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

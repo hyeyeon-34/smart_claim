@@ -9,6 +9,7 @@ import InsurerLogin from './pages/InsurerLogin';
 import Mypage from './pages/Mypage';
 import ButtonTestPage from './test_pages/ButtonTestPage';
 import Documents from "./testComponents/Documents";
+import Chatbot from './test_pages/Chatbot';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -60,6 +61,7 @@ function App() {
 
           {/* 테스트 페이지 */}
           <Route path="/test_button" element={<ButtonTestPage />} />
+          <Route path="/chatbot" element={<Chatbot />} />
 
           {/* test 컴포넌트 입니다. */}
           <Route path="/documents/upload" element={<Documents />} />
