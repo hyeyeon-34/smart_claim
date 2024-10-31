@@ -3,28 +3,42 @@ import { useNavigate } from 'react-router-dom';
 
 const UserLogin = ({ onLogin }) => {
   const [username, setUsername] = useState('');
-  const [birthdate, setBirthdate] = useState('');
   const [user_pn, setUserPn] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+
+  // 전화번호 자동 포맷 함수
+  const handlePhoneNumberChange = (e) => {
+    let formattedNumber = e.target.value.replace(/\D/g, ''); // 숫자만 남기기
+    if (formattedNumber.length <= 3) {
+      setUserPn(formattedNumber);
+    } else if (formattedNumber.length <= 7) {
+      setUserPn(`${formattedNumber.slice(0, 3)}-${formattedNumber.slice(3)}`);
+    } else {
+      setUserPn(
+        `${formattedNumber.slice(0, 3)}-${formattedNumber.slice(
+          3,
+          7
+        )}-${formattedNumber.slice(7, 11)}`
+      );
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const response = await fetch('http://localhost:8080/login/user', {
-        // HTTP로 변경
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, birthdate, user_pn }),
+        body: JSON.stringify({ username, user_pn }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // 응답 상태가 200일 때
         localStorage.setItem('token', data.token);
         onLogin(); // 로그인 상태 변경
         navigate('/mypage'); // 고객 대시보드로 이동
@@ -46,21 +60,15 @@ const UserLogin = ({ onLogin }) => {
           placeholder="성명을 입력하세요"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          required // 필수 입력 필드
-        />
-        <input
-          type="text" // 날짜 입력 필드로 변경
-          placeholder="생년월일"
-          value={birthdate}
-          onChange={(e) => setBirthdate(e.target.value)}
-          required // 필수 입력 필드
+          required
         />
         <input
           type="text"
-          placeholder="전화번호"
+          placeholder="전화번호 (예: 010-1234-5678)"
           value={user_pn}
-          onChange={(e) => setUserPn(e.target.value)}
-          required // 필수 입력 필드
+          onChange={handlePhoneNumberChange}
+          maxLength="13" // 형식에 맞춘 최대 길이 제한
+          required
         />
         <button type="submit">로그인</button>
       </form>

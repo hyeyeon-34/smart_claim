@@ -4,15 +4,15 @@ const jwt = require('jsonwebtoken');
 
 // 고객 로그인
 exports.UserLogin = async (req, res) => {
-  const { username, birthdate, user_pn } = req.body;
+  const { username, user_pn } = req.body;
 
   const query = `
     SELECT user_id, username FROM users 
-    WHERE username = $1 AND birthdate = $2 AND user_pn = $3
+    WHERE username = $1 AND user_pn = $2
   `;
 
   try {
-    const result = await database.query(query, [username, birthdate, user_pn]);
+    const result = await database.query(query, [username, user_pn]);
 
     if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials' });
