@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // 고객 로그인
-exports.userLogin = async (req, res) => {
+exports.UserLogin = async (req, res) => {
   const { username, birthdate, user_pn } = req.body;
 
   const query = `
@@ -32,7 +32,7 @@ exports.userLogin = async (req, res) => {
 };
 
 // 상담사 로그인
-exports.managerLogin = async (req, res) => {
+exports.ManagerLogin = async (req, res) => {
   const { manager_userid, manager_password } = req.body;
 
   const query = `
@@ -64,7 +64,7 @@ exports.managerLogin = async (req, res) => {
 };
 
 // 보험사 직원 로그인
-exports.insurerLogin = async (req, res) => {
+exports.InsurerLogin = async (req, res) => {
   const { insurer_userid, insurer_password } = req.body;
 
   const query = `
@@ -96,7 +96,7 @@ exports.insurerLogin = async (req, res) => {
 };
 
 // 상담사 비밀번호 변경
-exports.changeManagerPassword = async (req, res) => {
+exports.ChangeManagerPassword = async (req, res) => {
   const { manager_username, manager_userid, manager_pn, new_password } =
     req.body;
 

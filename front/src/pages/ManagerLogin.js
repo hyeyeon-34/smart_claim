@@ -11,7 +11,7 @@ const ManagerLogin = ({ onLogin }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3000/login/manager', {
+      const response = await fetch('http://localhost:8080/login/manager', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,12 +43,14 @@ const ManagerLogin = ({ onLogin }) => {
           placeholder="아이디"
           value={manager_userid}
           onChange={(e) => setManagerUserId(e.target.value)}
+          required
         />
         <input
           type="password"
           placeholder="비밀번호"
           value={manager_password}
           onChange={(e) => setManagerPassword(e.target.value)}
+          required
         />
         <button type="submit">로그인</button>
       </form>

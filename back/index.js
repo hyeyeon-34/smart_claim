@@ -1,10 +1,18 @@
 const express = require("express");
-const cors = require("cors");
-
-const app = express();
 const PORT = 8080;
 
-app.use(cors());
+const app = express();
+
+const cors = require("cors");
+
+app.use(
+  cors({
+    origin: "http://localhost:3000", // 프론트엔드 주소
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 app.get("/", (req, res) => {

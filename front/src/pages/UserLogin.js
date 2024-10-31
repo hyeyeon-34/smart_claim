@@ -12,7 +12,8 @@ const UserLogin = ({ onLogin }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3000/login/user', {
+      const response = await fetch('http://localhost:8080/login/user', {
+        // HTTP로 변경
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -22,15 +23,16 @@ const UserLogin = ({ onLogin }) => {
 
       const data = await response.json();
 
-      if (data.token) {
+      if (response.ok) {
+        // 응답 상태가 200일 때
         localStorage.setItem('token', data.token);
         onLogin(); // 로그인 상태 변경
-        navigate('/mypage'); // 고객 대시보드로 이동 (필요에 따라 수정)
+        navigate('/mypage'); // 고객 대시보드로 이동
       } else {
-        setErrorMessage(data.error);
+        setErrorMessage(data.error); // 오류 메시지 처리
       }
     } catch (error) {
-      setErrorMessage('서버와 통신 중 오류가 발생했습니다.');
+      setErrorMessage('서버와 통신 중 오류가 발생했습니다.'); // 일반적인 오류 처리
     }
   };
 
@@ -44,18 +46,21 @@ const UserLogin = ({ onLogin }) => {
           placeholder="성명을 입력하세요"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          required // 필수 입력 필드
         />
         <input
-          type="date"
+          type="text" // 날짜 입력 필드로 변경
           placeholder="생년월일"
           value={birthdate}
           onChange={(e) => setBirthdate(e.target.value)}
+          required // 필수 입력 필드
         />
         <input
           type="text"
           placeholder="전화번호"
           value={user_pn}
           onChange={(e) => setUserPn(e.target.value)}
+          required // 필수 입력 필드
         />
         <button type="submit">로그인</button>
       </form>
