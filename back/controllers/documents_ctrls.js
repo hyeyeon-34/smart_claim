@@ -1,11 +1,11 @@
 const database = require("../database/database");
 
-// const multer = require("multer");
+const multer = require("multer");
 // const path = require("path");
 // const fs = require("fs");
 // const { v4: uuid4 } = require("uuid");
 
-// ------------------------------ GET documents ------------------------------
+// ----------------------------- GET documents -----------------------------
 // 필요서류 조회
 
 // 각 클레임 건에 대해 제출한 서류 조회 -> /documents?claim=id
@@ -30,49 +30,56 @@ exports.getAllDocs = async () => {
   return result.rows;
 };
 
-// ------------------------------ POST documents ------------------------------
+// ---------------------------- POST documents ----------------------------
 // 특정 클레임 건에 대한 서류 등록 -> /documents/:claim_id
-// // 서류 저장 경로 설정
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     const uploadDir = "uploads/"; // 파일을 저장할 디렉토리
-//     if (!fs.existsSync(uploadDir)) {
-//       fs.mkdirSync(uploadDir);
-//     }
-//     cb(null, uploadDir);
-//   },
-//   filename: function (req, file, cb) {
-//     const ext = path.extname(file.originalname);
-//     cb(null, `${uuid4()}${ext}`); // 파일 이름을 유니크하게 설정
-//   },
-// });
+const upload = multer({ storage: multer.memoryStorage() }); // Multer 설정
 
-// const upload = multer({ storage: storage }).single("file");
-
-// exports.uploadDocs = (req, res) => {
-//   console.log("req", req);
-//   upload(req, res, (err) => {
-//     if (err) {
-//       console.error("Error uploading image:", err);
-//       return res.status(500).json({ error: "Failed to upload image" });
-//     }
-
-//     const file = req.file;
-//     const imageUrl = `${req.protocol}://${req.get("host")}/${file.path}`; // 이미지의 URL 생성
-
-//     res.status(201).json({ url: imageUrl });
-//   });
-// };
-
+// 파일 업로드 및 데이터베이스에 저장하는 함수 -> /documents/:claim-id
 exports.postDocs = async (req, res) => {
   const { claim_id } = req.params;
-  const query = "";
-  try {
-    const result = await database.query(query, []);
-  } catch (error) {}
-};
 
-// ----------------------------- DELETE documents -----------------------------
+  const files = req.files; // 업로드된 파일 배열
+  let required_idx = []; // 요구서류 idx (1=등본, 2=보상신청서, 3=개인정보동의서, 4=통장사본, 5=수리내역서, 6=분실신고서)
+
+  // 상황에 따른 required_idx 설정
+  if (files.length === 4) {
+    // 분실건은 필요서류 4개
+    required_idx = [1, 2, 3, 6];
+  } else if (files.length === 5) {
+    // 부분파손건은 필요서류 5개
+    required_idx = [1, 2, 3, 4, 5];
+  } else {
+    return res.status(400).json({ error: "Invalid number of files uploaded." });
+  }
+
+  try {
+    const queries = files.map((file, index) => {
+      const query = `INSERT INTO document_statuses 
+        (claim_id, required_document_idx, insurer_idx, submitted, reviewed, file_buffer)
+        VALUES ($1, $2, $3, $4, $5, $6)`;
+
+      const values = [
+        claim_id,
+        required_idx[index], // 상황에 맞는 require_document_idx
+        1, // 보험사 idx
+        true, // 제출 상태
+        false, // 검토 상태
+        file.buffer, // 파일의 버퍼
+      ];
+
+      return database.query(query, values);
+    });
+
+    await Promise.all(queries);
+    return res.status(200).json({ message: "Docs Uploaded Successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+exports.upload = upload.array("docs", 5); // 최대 파일 5개를 한 번에 업로드 가능
+
+// --------------------------- DELETE documents ---------------------------
 // 특정 클레임 건에 대한 서류 삭제 -> /documents/:claim_id
 exports.deleteDocs = async (req, res) => {
   const { claim_id } = req.params;
@@ -82,7 +89,7 @@ exports.deleteDocs = async (req, res) => {
   } catch (error) {}
 };
 
-// ----------------------------- PATCH documents -----------------------------
+// ---------------------------- PATCH documents ----------------------------
 // 특정 클레임 건에 대한 서류 수정
 exports.patchDocs = async (req, res) => {
   const { claim_id } = req.params;
