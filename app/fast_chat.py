@@ -59,7 +59,7 @@ def extract_text_from_pdf(file_path):
 # URI 형식: postgresql://username:password@host:port/database
 
 # URI 생성
-db_uri = f"postgresql://{os.getenv('DB_USERNAME')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+db_uri = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
 db = SQLDatabase.from_uri(db_uri)
 
 # 데이터베이스의 정보를 출력합니다.

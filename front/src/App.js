@@ -7,6 +7,7 @@ import UserLogin from './pages/UserLogin';
 import ManagerLogin from './pages/ManagerLogin';
 import InsurerLogin from './pages/InsurerLogin';
 import Mypage from './pages/Mypage';
+import ButtonTestPage from './test_pages/ButtonTestPage';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -54,6 +55,9 @@ function App() {
           />
           <Route path="/mypage" element={<Mypage />} />
           {/* 필요한 다른 경로를 여기에 추가 */}
+
+          {/* 테스트 페이지 */}
+          <Route path="/test_button" element={<ButtonTestPage />} />
         </Routes>
       </div>
 

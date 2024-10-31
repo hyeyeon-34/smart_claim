@@ -1,8 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Basic styling for the layout */
 .App {
   font-family: Arial, sans-serif;
 }
 
+/* card */
 .card-section {
   padding: 50px 0;
   text-align: center;

@@ -43,7 +43,7 @@ from langchain.retrievers import BM25Retriever, EnsembleRetriever
 
 
 # URI 생성
-db_uri = f"postgresql://{os.getenv('DB_USERNAME')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+db_uri = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
 db = SQLDatabase.from_uri(db_uri)
 
 

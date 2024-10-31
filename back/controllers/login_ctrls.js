@@ -13,11 +13,11 @@ exports.UserLogin = async (req, res) => {
 
   try {
     const result = await database.query(query, [username, birthdate, user_pn]);
-
+    console.log('result', result);
     if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-
+    
     const token = jwt.sign(
       { id: result.rows[0].user_id, role: 'user' },
       process.env.JWT_SECRET,
