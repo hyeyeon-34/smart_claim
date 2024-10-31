@@ -9,18 +9,7 @@ import ManagerLogin from './pages/ManagerLogin';
 import InsurerLogin from './pages/InsurerLogin';
 import Mypage from './pages/Mypage';
 import ButtonTestPage from './test_pages/ButtonTestPage';
-=======
-import React, { useState, useEffect } from "react";
-import { Routes, Route, useNavigate, BrowserRouter } from "react-router-dom";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import Home from "./pages/Home";
-import UserLogin from "./pages/UserLogin";
-import ManagerLogin from "./pages/ManagerLogin";
-import InsurerLogin from "./pages/InsurerLogin";
-import Mypage from "./pages/Mypage";
 import Documents from "./testComponents/Documents";
->>>>>>> 8ce5f2cd4bca5ff91d00930abf9258b789c23b03
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -69,13 +58,13 @@ function App() {
           <Route path="/mypage" element={<Mypage />} />
           {/* 필요한 다른 경로를 여기에 추가 */}
 
-<<<<<<< HEAD
+
           {/* 테스트 페이지 */}
           <Route path="/test_button" element={<ButtonTestPage />} />
-=======
+
           {/* test 컴포넌트 입니다. */}
           <Route path="/documents/upload" element={<Documents />} />
->>>>>>> 8ce5f2cd4bca5ff91d00930abf9258b789c23b03
+
         </Routes>
       </div>
 
