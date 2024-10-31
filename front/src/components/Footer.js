@@ -1,32 +1,30 @@
 import React from 'react';
 
+const FooterSection = ({ title, items }) => (
+  <div className="flex flex-col justify-between h-full">
+    <h4 className="mb-2 font-bold">{title}</h4>
+    <ul className="space-y-1">
+      {items.map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
+    </ul>
+  </div>
+);
+
 const Footer = () => {
+  const footerData = [
+    { title: 'Use cases', items: ['UI design', 'UX design', 'Wireframing', 'Diagramming', 'Brainstorming'] },
+    { title: 'Explore', items: ['Design', 'Prototyping', 'Development features'] },
+    { title: 'Resources', items: ['Blog', 'Best practices', 'Colors', 'Color wheel', 'Support'] },
+  ];
+
   return (
-    <footer className="footer">
-      <div className="footer-logo">Logo</div>
-      <div className="footer-links">
-        <div>
-          <h4>Use cases</h4>
-          <p>UI design</p>
-          <p>UX design</p>
-          <p>Wireframing</p>
-          <p>Diagramming</p>
-          <p>Brainstorming</p>
-        </div>
-        <div>
-          <h4>Explore</h4>
-          <p>Design</p>
-          <p>Prototyping</p>
-          <p>Development features</p>
-        </div>
-        <div>
-          <h4>Resources</h4>
-          <p>Blog</p>
-          <p>Best practices</p>
-          <p>Colors</p>
-          <p>Color wheel</p>
-          <p>Support</p>
-        </div>
+    <footer className="footer w-full h-fit bg-slate-800 px-[32px] py-[16px] md:px-10 lg:px-20 text-xs lg:text-sm">
+      <div className="footer-links w-full h-full flex justify-between items-start">
+        <div className="footer-logo">Logo</div>
+        {footerData.map((section, index) => (
+          <FooterSection key={index} title={section.title} items={section.items} />
+        ))}
       </div>
     </footer>
   );
