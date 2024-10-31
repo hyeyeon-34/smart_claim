@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, BrowserRouter } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import UserLogin from './pages/UserLogin';
 import ManagerLogin from './pages/ManagerLogin';
 import InsurerLogin from './pages/InsurerLogin';
 import Mypage from './pages/Mypage';
 import ButtonTestPage from './test_pages/ButtonTestPage';
-import Documents from "./testComponents/Documents";
+import Documents from './testComponents/Documents';
 import Chatbot from './test_pages/Chatbot';
+import Claim from './pages/Claim';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -17,7 +19,7 @@ function App() {
 
   // 컴포넌트가 처음 렌더링될 때 로컬 스토리지에서 로그인 상태를 확인
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true); // 토큰이 있으면 로그인 상태 유지
     }
@@ -28,10 +30,9 @@ function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("manager_userid"); // 필요에 따라 수정
+    localStorage.removeItem('token');
     setIsLoggedIn(false);
-    navigate("/userlogin"); // 로그인 페이지로 리디렉션
+    navigate('/userlogin'); // 로그인 페이지로 리디렉션
   };
 
   return (
@@ -56,16 +57,19 @@ function App() {
             element={<InsurerLogin onLogin={handleLogin} />}
           />
           <Route path="/mypage" element={<Mypage />} />
-          {/* 필요한 다른 경로를 여기에 추가 */}
-
-
-          {/* 테스트 페이지 */}
           <Route path="/test_button" element={<ButtonTestPage />} />
           <Route path="/chatbot" element={<Chatbot />} />
-
-          {/* test 컴포넌트 입니다. */}
           <Route path="/documents/upload" element={<Documents />} />
-
+          <Route
+            path="/claim"
+            element={
+              <Claim /> // 아래 protectedroute 활성화할 때는 여기를 주석처리
+              // <ProtectedRoute
+              //   element={<Claim />}
+              //   allowedRoles={['manager', 'insurer']} // 상담사와 보험사 직원만 허용
+              // />
+            }
+          />
         </Routes>
       </div>
 

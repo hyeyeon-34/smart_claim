@@ -6,7 +6,7 @@ function Home() {
     {
       title: '보상 신청 방법',
       description: '보상 신청 방법에 대한 설명',
-      link: '/claim',
+      link: '/process',
     },
     {
       title: '보험 안내 페이지',
