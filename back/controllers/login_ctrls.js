@@ -17,7 +17,7 @@ exports.UserLogin = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-    
+
     const token = jwt.sign(
       { id: result.rows[0].user_id, role: 'user' },
       process.env.JWT_SECRET,

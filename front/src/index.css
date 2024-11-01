@@ -18,12 +18,17 @@
   flex-wrap: wrap;
 }
 .card {
-  width: 200px;
+  width: 300px;
   padding: 20px;
   margin: 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
   text-align: left;
+}
+.card-image {
+  width: 140px;
+  height: 140px;
+  border: 2px solid gray;
 }
 
 /* Footer */
