@@ -32,13 +32,9 @@ function Home() {
 
   return (
     <div className='w-full h-fit'>
-      <header className="main-banner">
-        <h1 className='text-2xl font-bold mb-4'>휴대폰 분실/파손 보험 보상 서비스</h1>
-        <p>최적의 서비스를 경험하세요</p>
-      </header>
-
       <section className="services">
-        <h2 className="text-2xl font-bold mb-4">서비스 안내</h2>
+        <h1 className='text-2xl font-bold mb-2'>휴대폰 분실/파손 보험 보상 서비스</h1>
+        <p className='text-base mb-4'>최적의 서비스를 경험하세요</p>
         <div className="card-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {services.map((service) => (
             <Card

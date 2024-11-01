@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, BrowserRouter } from 'react-router-dom';
 import Header from './components/Header';
+import MainBanner from './components/MainBanner';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
@@ -40,6 +41,8 @@ function App() {
       <nav className="z-[1000] header w-full border-[#e0e0e0] backdrop-blur-sm">
         <Header isLoggedIn={isLoggedIn} onLogout={handleLogout} />
       </nav>
+
+      <MainBanner />
 
       <div className="w-full lg:w-[80%] flex justify-center items-center px-4">
         <Routes>
