@@ -6,8 +6,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        text_d_main: '#1E1E1E',      // font-main_black
-        text_d_second: '#757575',    // font-gray
+        d_main: '#1E1E1E',      // font-main_black
+        d_second: '#757575',    // font-gray
       },
     },
   },

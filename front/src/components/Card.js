@@ -15,8 +15,8 @@ function Card({ title, description, link }) {
     <div className="card" >
       {/* 카드 이미지 경로로 대체 */}
       <img className="card-image" src={logoImage} alt="Logo" />
-      <div className="card-title text-xl font-semibold pt-4">{title}</div>
-      <div className="card-description py-1">{description}</div>
+      <div className="card-title text-d_main text-xl font-semibold pt-4">{title}</div>
+      <div className="card-description text-d_second py-1">{description}</div>
       {/* 버튼을 오른쪽에 배치하기 위한 flex 레이아웃 */}
       <div className="flex justify-end">
         <Button title="이동" buttonType="secondary" buttonSize="small" link={link} />
