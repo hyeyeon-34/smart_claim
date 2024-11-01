@@ -12,13 +12,8 @@ exports.UserLogin = async (req, res) => {
   `;
 
   try {
-<<<<<<< HEAD
-    const result = await database.query(query, [username, birthdate, user_pn]);
-    console.log('result', result);
-=======
     const result = await database.query(query, [username, user_pn]);
 
->>>>>>> 8ce5f2cd4bca5ff91d00930abf9258b789c23b03
     if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
