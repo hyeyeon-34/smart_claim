@@ -8,6 +8,7 @@ module.exports = {
       colors: {
         d_main: '#1E1E1E',      // font-main_black
         d_second: '#757575',    // font-gray
+        d_maincolor: '#3617CE' // 강조 컬러
       },
       fontSize: {
         'xs': '.75rem',          // 작은 글자
