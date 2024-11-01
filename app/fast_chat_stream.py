@@ -1,14 +1,10 @@
-from fastapi import FastAPI, HTTPException, Depends
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from dotenv import load_dotenv
-import os
+from typing import List
+from fastapi.middleware.cors import CORSMiddleware  # 외부 도메인의 API 접근을 허용하기 위한 CORS 미들웨어입니다.
+from typing import Optional
+from fastapi.responses import StreamingResponse
 from typing import Optional, AsyncGenerator
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import PromptTemplate
-from langchain_community.utilities import SQLDatabase
-from operator import itemgetter
 
 app = FastAPI()
 
@@ -306,22 +302,52 @@ def answer_question(question, user_pn):
   
   return response
 
-from typing import Optional
 # 기본 모델 정의
 class QuestionRequest(BaseModel):
     question: str
     user_pn: Optional[str] = None
 
-# 질문 API 엔드포인트
-@app.post("/answer_question")
-async def api_answer_question(request: QuestionRequest):
-    return {"response": answer_question(request.question, request.user_pn)}
+import asyncio
+from typing import AsyncGenerator, Optional
 
-# 이 Python 파일이 독립적으로 실행될 경우, uvicorn을 사용하여 FastAPI 앱을 시작합니다.
-# uvicorn은 FastAPI의 ASGI 서버를 실행하는 데 사용됩니다.
+async def answer_question_stream(question: str, user_pn: Optional[str] = None) -> AsyncGenerator[str, None]:
+    try:
+        # 프롬프트를 사용하여 질문을 필터링
+        personally_filter_text = personally_filter_prompt.format(question=question)
+        personally_filter_response = llm(personally_filter_text)
+        
+        if personally_filter_response == "RESTRICTED":
+            yield "개인정보 보호를 위해 답변이 불가능한 질문입니다."
+            return
+        elif not user_pn:
+            yield "개인정보 확인을 위해 로그인이 필요한 질문입니다."
+            return
+
+        # 필터링으로 DB 또는 VECTOR 체인 선택
+        filter_text = filter_prompt.format(question=question)
+        filter_response = llm(filter_text)
+
+        if "DB_REQUIRED" in filter_response:
+            response = create_db_chain(question, user_pn)  # 동기식일 경우 수정 필요
+        else:
+            response = create_vector_chain(question)  # 동기식일 경우 수정 필요
+
+        # 생성된 응답을 스트리밍으로 전송
+        for part in response.split("\n"):  # 한 줄씩 스트리밍 응답
+            yield part
+            await asyncio.sleep(0.1)  # 예시용 지연 시간
+
+    except Exception as e:
+        yield f"에러가 발생했습니다: {str(e)}"
+
+
+
+# 질문 API 엔드포인트 (스트리밍 방식)
+@app.post("/answer_question_stream")
+async def api_answer_question_stream(request: QuestionRequest):
+    return StreamingResponse(answer_question_stream(request.question, request.user_pn), media_type="text/plain")
+
+# FastAPI 실행 설정
 if __name__ == "__main__":
-    import uvicorn  # uvicorn 모듈을 불러옵니다.
-
-    # 앱을 모든 네트워크 인터페이스("0.0.0.0")에서 8000번 포트로 실행합니다.
-    # 이렇게 하면 로컬뿐 아니라 네트워크상의 다른 장치에서도 API에 접근할 수 있습니다.
+    import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -73,7 +73,8 @@ function App() {
         </Routes>
       </div>
 
-      <footer className="footer translate-y-[-100%] h-5 w-full mt-2">
+      {/* <footer className="footer translate-y-[-100%] h-5 w-full mt-2"> */}
+      <footer className="footer h-5 w-full mt-2">
         <Footer />
       </footer>
     </div>
